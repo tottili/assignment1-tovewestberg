@@ -6,6 +6,32 @@ public class Member {
     private String lastName;
     private int numberOfActiveLoans;
 
+    /* Konstruktor för att skapa ett objekt av en låntagare. Input kräver personnummer, för- och efternamn.
+    Aktiva lån är satt till 0 för en helt ny låntagare. */
+    public Member(String socialSecurityNumber, String firstName, String lastName) {
+        this.socialSecurityNumber = socialSecurityNumber;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.numberOfActiveLoans = 0;
+    }
+
+    /* Konstruktor för att skapa ett objekt av en låntagare som saknar personnummer. Input kräver för- och efternamn.
+     Aktiva lån har fortfarande initieringen 0 lån och personnummer initieras till en tom textsträng. */
+    public Member(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.numberOfActiveLoans = 0;
+        this.socialSecurityNumber = "";
+    }
+
+    //Metod som avgör ifall låntagaren får låna fler böcker, maxantalet aktiva lån är 30. Returnerar boolean
+    public boolean hasMaximumActiveLoans() {
+        if (this.numberOfActiveLoans < 31)
+            return false;
+        else
+            return true;
+    }
+
     //Metod som returnerar låntagarens personnummer, i String-format
     public String getSocialSecurityNumber() {
         return this.socialSecurityNumber;
@@ -13,6 +39,7 @@ public class Member {
 
     //Metod som ändrar låntagarens personnummer, i String-format
     public void setSocialSecurityNumber(String newSocialSecurityNumber) {
+
         this.socialSecurityNumber = newSocialSecurityNumber;
     }
 
