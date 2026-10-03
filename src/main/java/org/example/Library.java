@@ -43,7 +43,7 @@ public class Library {
                 case "4" -> returnBook();
                 case "5" -> findBook();
                 case "6" -> listLoanedBooks();
-                case "e" -> running = false;
+                case "e", "E" -> running = false;
                 default -> IO.println("Det går inte att välja. Försök igen.");
             }
         } while (running);
@@ -86,7 +86,8 @@ public class Library {
         return true;
     }
 
-    // Metod som lånar ut bok.
+    // Metod som lånar ut bok. Användaren får mata in ISBN-numret som identifierare för boken, finns boken och är
+    //tillgänglig i lager så lånas den ut. Låntagaren och boken förs in i arrayen loans.
     private void lendBook() {
         long isbn = Long.parseLong(IO.readln("ISBN-nummer: "));
         Book bookToLend = null;
@@ -132,8 +133,45 @@ public class Library {
                 memberToLend.getFirstName() + " " + memberToLend.getLastName());
     }
 
-    //Metod som återlämnar en lånad bok.
+    //Metod som återlämnar en lånad bok. Användaren får mata in bokens ISBN, en check görs för att kolla så den
+    //inte redan finns i lager. Låntagaren hittas från arrayen loans. För att det inte ska bli luckor skrivs den
+    //sista lånet i arrayen över på den bok som lämnas tillbaka, och null läggs på den sista platsen i arrayen.
+    //Metoden minskar loanCount och låntagarens räknare.
     private void returnBook() {
+        long isbn = Long.parseLong(IO.readln("ISBN-nummer: "));
+        Book bookToReturn = null;
+        for (Book book : books) {
+            if (book != null && book.isbn() == isbn) {
+                bookToReturn = book;
+                break;
+            }
+        }
+        if ( bookToReturn == null ) {
+            IO.println("Ingen bok hittades med det ISBN-numret.");
+            return;
+        }
+        if ( isBookAvailable(bookToReturn) ) {
+            IO.println("Boken är redan i lager");
+            return;
+        }
+        int loanIndex = -1;
+        for ( int i = 0; i < loanCount; i++ ) {
+            Loan loan = loans[i];
+            if (loan != null && loan.getBook().isbn() == isbn ) {
+                loanIndex = i;
+                break;
+            }
+        }
+        if ( loanIndex == -1 ) {
+            IO.println("Det finns inget registrerat lån för den boken och låntagaren.");
+            return;
+        }
+        Member memberToReturn = loans[loanIndex].getMember();
+        loans[loanIndex] = loans[loanCount - 1];
+        loans[loanCount - 1] = null;
+        loanCount--;
+        memberToReturn.changeNumberOfActiveLoans(-1);
+        IO.println("Tack! Boken har nu lämnats tillbaka till biblioteket.");
     }
 
     //Metod som listar böcker och dess status
