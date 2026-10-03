@@ -42,7 +42,7 @@ public class Library {
                 case "3" -> lendBook();
                 case "4" -> returnBook();
                 case "5" -> findBook();
-                case "6" -> listLoanedBooks();
+                case "6" -> printAllBooks();
                 case "e", "E" -> running = false;
                 default -> IO.println("Det går inte att välja. Försök igen.");
             }
@@ -174,9 +174,30 @@ public class Library {
         IO.println("Tack! Boken har nu lämnats tillbaka till biblioteket.");
     }
 
-    //Metod som listar böcker och dess status
-    private void listLoanedBooks() {
+    //Metod som skriver ut alla böckerna i arrayen books. Skriver även ut bokens status och när
+    //en bok är utlånad skriver den ut vem låntagaren är.
+    private void printAllBooks() {
+        for ( int i = 0; i < bookCount; i++ ) {
+            Book book = books[i];
+            IO.println(book.title() + ", skriven av: "
+                    + book.author() + " och dess ISBN: "
+                    + book.isbn() + ".");
 
+            Loan bookLoan = null;
+            for ( int j = 0; j < loanCount; j++ ) {
+                if ( loans[j].getBook().isbn() == book.isbn() ) {
+                    bookLoan = loans[j];
+                    break;
+                }
+            }
+            if ( bookLoan == null )
+                IO.println("Boken finns i lager");
+            else {
+                Member member = bookLoan.getMember();
+                IO.println("Boken är tyvärr utlånad, till "
+                        + member.getFirstName() + " " + member.getLastName());
+            }
+        }
     }
 
     //Metod för att söka på (del av) titel eller författare. Tar användarens input och konverterar till gemener

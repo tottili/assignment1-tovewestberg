@@ -26,10 +26,7 @@ public class Member {
 
     //Metod som avgör ifall låntagaren får låna fler böcker, maxantalet aktiva lån är 30. Returnerar boolean
     public boolean hasMaximumActiveLoans() {
-        if (this.numberOfActiveLoans < 30)
-            return false;
-        else
-            return true;
+        return getNumberOfActiveLoans() >= 30;
     }
 
     //Metod som returnerar låntagarens personnummer, i String-format
