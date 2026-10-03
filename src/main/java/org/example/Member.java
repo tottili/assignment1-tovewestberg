@@ -16,7 +16,7 @@ public class Member {
     }
 
     /* Konstruktor för att skapa ett objekt av en låntagare som saknar personnummer. Input kräver för- och efternamn.
-     Aktiva lån har fortfarande initieringen 0 lån och personnummer initieras till en tom textsträng. */
+     Aktiva lån har initieringen 0 lån och personnummer initieras till en tom textsträng. */
     public Member(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,46 +25,51 @@ public class Member {
     }
 
     //Metod som avgör ifall låntagaren får låna fler böcker, maxantalet aktiva lån är 30. Returnerar boolean
-    public boolean hasMaximumActiveLoans() {
-        if (this.numberOfActiveLoans < 31)
+    private boolean hasMaximumActiveLoans() {
+        if (this.numberOfActiveLoans < 30)
             return false;
         else
             return true;
     }
 
     //Metod som returnerar låntagarens personnummer, i String-format
-    public String getSocialSecurityNumber() {
+    private String getSocialSecurityNumber() {
         return this.socialSecurityNumber;
     }
 
     //Metod som ändrar låntagarens personnummer, i String-format
-    public void setSocialSecurityNumber(String newSocialSecurityNumber) {
+    private void setSocialSecurityNumber(String newSocialSecurityNumber) {
 
         this.socialSecurityNumber = newSocialSecurityNumber;
     }
 
     //Metod som ger låntagarens förnamn, returnerar en String
-    public String getFirstName() {
+    private String getFirstName() {
         return this.firstName;
     }
 
     //Metod som ändrar låntagarens förnamn, String-format
-    public void setFirstName(String newFirstName) {
+    private void setFirstName(String newFirstName) {
         this.firstName = newFirstName;
     }
 
     //Metod som returnerar låntagarens efternamn, i String-format
-    public String getLastName() {
+    private String getLastName() {
         return this.lastName;
     }
 
     //Metod som ändrar låntagarens efternamn, i String-format
-    public void setLastName(String newLastName) {
+    private void setLastName(String newLastName) {
         this.lastName = newLastName;
     }
 
     //Metod som returnerar antalet aktiva lån en låntagare har, i int-format
-    public int getNumberOfActiveLoans() {
+    private int getNumberOfActiveLoans() {
         return this.numberOfActiveLoans;
+    }
+
+    //Metod som är räknare för låntagarens aktiva lån, input integer. Negativa tal avser återlämning.
+    private void changeNumberOfActiveLoans(int change) {
+        this.numberOfActiveLoans += change;
     }
 }
