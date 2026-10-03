@@ -5,6 +5,7 @@ public class Library {
     private Book[] books = new Book[10];
     private int bookCount = 0;
     private Loan[] loans = new Loan[10];
+    private int loanCount = 0;
     private Member[] members = new Member[10];
     private int memberCount = 0;
 
@@ -79,7 +80,7 @@ public class Library {
     // Metod som säger ifall en bok är tillgänglig för utlåning.
     private boolean isBookAvailable(Book book) {
         for (Loan loan : loans) {
-            if (loan != null && loan.getBook().isbn() == book.isbn()) //för att undvika NullPointerException
+            if ( loan != null && loan.getBook().isbn() == book.isbn() ) //för att undvika NullPointerException
                 return false;
         }
         return true;
@@ -87,6 +88,48 @@ public class Library {
 
     // Metod som lånar ut bok.
     private void lendBook() {
+        long isbn = Long.parseLong(IO.readln("ISBN-nummer: "));
+        Book bookToLend = null;
+        for (Book book : books) {
+            if (book != null && book.isbn() == isbn) {
+                bookToLend = book;
+                break;
+            }
+        }
+        if ( bookToLend == null ) {
+            IO.println("Ingen bok hittades med det ISBN-numret.");
+            return;
+        }
+        if ( !isBookAvailable(bookToLend) ) {
+            IO.println("Boken är redan utlånad");
+            return;
+        }
+        IO.println("Boken hittades: " + bookToLend.title());
+        String socialSecurityNumber = IO.readln("Låntagarens personnummer: ");
+        Member memberToLend = null;
+        for (Member member : members) {
+            if ( member != null && member.getSocialSecurityNumber().equals(socialSecurityNumber)) {
+                memberToLend = member;
+                break;
+            }
+        }
+        if ( memberToLend == null ) {
+            IO.println("Det finns tyvärr ingen låntagare med det personnumret.");
+            return;
+        }
+        if ( memberToLend.hasMaximumActiveLoans() ) {
+            IO.println("Det går inte att låna boken eftersom det maximala antalet lån redan är nått");
+            return;
+        }
+        if ( loanCount >= loans.length) {
+            IO.println("Det går inte att registrera fler lån.");
+            return;
+        }
+        loans[loanCount] = new Loan(bookToLend, memberToLend);
+        loanCount++;
+        memberToLend.changeNumberOfActiveLoans(1);
+        IO.println("Boken " + bookToLend.title() + " lånades ut till " +
+                memberToLend.getFirstName() + " " + memberToLend.getLastName());
     }
 
     //Metod som återlämnar en lånad bok.
@@ -102,17 +145,21 @@ public class Library {
     //för att göra sökningen skiftlägesokänslig
     private void findBook() {
         String searchTerm = IO.readln("Titel/Författare: ");
-        searchTerm.toLowerCase(Locale.ROOT);
-        if (searchTerm.isEmpty()) {
+        String lowerSearchTerm = searchTerm.toLowerCase(Locale.ROOT);
+        if ( lowerSearchTerm.isEmpty() ) {
             IO.println("Du har inte skrivit något.");
             return;
         }
         for (int i = 0; i < bookCount; i++) {
             Book book = books[i];
-            if( book.title().toLowerCase(Locale.ROOT).contains(searchTerm)
-                || book.author().toLowerCase(Locale.ROOT).contains(searchTerm) ) {
-                IO.println("Din sökning gav resultatet: " + book.title() + "skriven av " +
-                        book.author() + "och ISBN: " + book.isbn());
+            if( book.title().toLowerCase(Locale.ROOT).contains(lowerSearchTerm)
+                || book.author().toLowerCase(Locale.ROOT).contains(lowerSearchTerm) ) {
+                IO.println("Din sökning gav resultatet: " + book.title() + " skriven av " +
+                        book.author() + " och ISBN: " + book.isbn());
+                if ( isBookAvailable(book) )
+                    IO.println("Boken finns i lager.");
+                else
+                    IO.println("Boken är tyvärr utlånad just nu.");
                 return;
             }
         }
