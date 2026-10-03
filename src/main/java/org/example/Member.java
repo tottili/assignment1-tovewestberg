@@ -25,7 +25,7 @@ public class Member {
     }
 
     //Metod som avgör ifall låntagaren får låna fler böcker, maxantalet aktiva lån är 30. Returnerar boolean
-    private boolean hasMaximumActiveLoans() {
+    public boolean hasMaximumActiveLoans() {
         if (this.numberOfActiveLoans < 30)
             return false;
         else
@@ -33,43 +33,43 @@ public class Member {
     }
 
     //Metod som returnerar låntagarens personnummer, i String-format
-    private String getSocialSecurityNumber() {
+    public String getSocialSecurityNumber() {
         return this.socialSecurityNumber;
     }
 
     //Metod som ändrar låntagarens personnummer, i String-format
-    private void setSocialSecurityNumber(String newSocialSecurityNumber) {
+    public void setSocialSecurityNumber(String newSocialSecurityNumber) {
 
         this.socialSecurityNumber = newSocialSecurityNumber;
     }
 
     //Metod som ger låntagarens förnamn, returnerar en String
-    private String getFirstName() {
+    public String getFirstName() {
         return this.firstName;
     }
 
     //Metod som ändrar låntagarens förnamn, String-format
-    private void setFirstName(String newFirstName) {
+    public void setFirstName(String newFirstName) {
         this.firstName = newFirstName;
     }
 
     //Metod som returnerar låntagarens efternamn, i String-format
-    private String getLastName() {
+    public String getLastName() {
         return this.lastName;
     }
 
     //Metod som ändrar låntagarens efternamn, i String-format
-    private void setLastName(String newLastName) {
+    public void setLastName(String newLastName) {
         this.lastName = newLastName;
     }
 
     //Metod som returnerar antalet aktiva lån en låntagare har, i int-format
-    private int getNumberOfActiveLoans() {
+    public int getNumberOfActiveLoans() {
         return this.numberOfActiveLoans;
     }
 
     //Metod som är räknare för låntagarens aktiva lån, input integer. Negativa tal avser återlämning.
-    private void changeNumberOfActiveLoans(int change) {
+    public void changeNumberOfActiveLoans(int change) {
         this.numberOfActiveLoans += change;
     }
 }

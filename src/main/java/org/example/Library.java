@@ -1,9 +1,9 @@
 package org.example;
+import java.util.Locale;
 
 public class Library {
     private Book[] books = new Book[10];
     private int bookCount = 0;
-    private boolean isBookAvailable;
     private Loan[] loans = new Loan[10];
     private Member[] members = new Member[10];
     private int memberCount = 0;
@@ -40,7 +40,7 @@ public class Library {
                 case "2" -> addMember();
                 case "3" -> lendBook();
                 case "4" -> returnBook();
-                case "5" -> IO.println("sök");
+                case "5" -> findBook();
                 case "6" -> listLoanedBooks();
                 case "e" -> running = false;
                 default -> IO.println("Det går inte att välja. Försök igen.");
@@ -76,27 +76,46 @@ public class Library {
         }
     }
 
-    // Metod som säger ifall en bok är tillgänglig för utlåning, returnerar en boolean. OBS! Finns även en boolean-
-    // variabel med samma namn.
-    private boolean isBookAvailable() {
-        return isBookAvailable;
+    // Metod som säger ifall en bok är tillgänglig för utlåning.
+    private boolean isBookAvailable(Book book) {
+        for (Loan loan : loans) {
+            if (loan != null && loan.getBook().isbn() == book.isbn()) //för att undvika NullPointerException
+                return false;
+        }
+        return true;
     }
 
-    //Metod som lånar ut böcker och returnerar true (boolean). Returnerar false om boken inte är tillgänglig.
-    private boolean lendBook() {
-        if ( !isBookAvailable ) {
-            isBookAvailable = true;
-            return true;
-        }
-        return false;
+    // Metod som lånar ut bok.
+    private void lendBook() {
     }
 
     //Metod som återlämnar en lånad bok.
     private void returnBook() {
-        isBookAvailable = false;
     }
 
+    //Metod som listar böcker och dess status
     private void listLoanedBooks() {
 
+    }
+
+    //Metod för att söka på (del av) titel eller författare. Tar användarens input och konverterar till gemener
+    //för att göra sökningen skiftlägesokänslig
+    private void findBook() {
+        String searchTerm = IO.readln("Titel/Författare: ");
+        searchTerm.toLowerCase(Locale.ROOT);
+        if (searchTerm.isEmpty()) {
+            IO.println("Du har inte skrivit något.");
+            return;
+        }
+        for (int i = 0; i < bookCount; i++) {
+            Book book = books[i];
+            if( book.title().toLowerCase(Locale.ROOT).contains(searchTerm)
+                || book.author().toLowerCase(Locale.ROOT).contains(searchTerm) ) {
+                IO.println("Din sökning gav resultatet: " + book.title() + "skriven av " +
+                        book.author() + "och ISBN: " + book.isbn());
+                return;
+            }
+        }
+        IO.println("Ingen träff hittades med din sökterm");
     }
 }
