@@ -73,7 +73,6 @@ public class Library {
         books[bookCount] = new Book(isbn, title, author);
         bookCount++;
         IO.println("Boken " + title + " skriven av " + author + " har lagts till i biblioteket.");
-
     }
 
     //Metod som lägger till låntagare i ett register och ökar räknaren. Kontrollerar att det finns plats
@@ -96,8 +95,8 @@ public class Library {
 
     // Metod som säger ifall en bok är tillgänglig för utlåning.
     private boolean isBookAvailable(Book book) {
-        for ( Loan loan : loans ) {
-            if ( loan != null && loan.getBook().isbn() == book.isbn() ) //för att undvika NullPointerException
+        for ( int i = 0; i < loanCount; i++ ) {
+            if (loans[i].getBook().isbn() == book.isbn() )
                 return false;
         }
         return true;
@@ -118,12 +117,11 @@ public class Library {
             }
         }
         Book bookToLend = null;
-        for ( Book book : books ) {
-            if (book != null && book.isbn() == isbn) {
-                bookToLend = book;
+        for ( int i = 0; i < bookCount; i++ )
+            if ( books[i].isbn() == isbn ) {
+                bookToLend = books[i];
                 break;
             }
-        }
         if ( bookToLend == null ) {
             IO.println("Ingen bok hittades med det ISBN-numret.");
             return;
@@ -137,9 +135,9 @@ public class Library {
         while ( containsLetter(socialSecurityNumber) )
             socialSecurityNumber = IO.readln("Får bara innehålla siffror: ");
         Member memberToLend = null;
-        for ( Member member : members ) {
-            if ( member != null && member.getSocialSecurityNumber().equals(socialSecurityNumber)) {
-                memberToLend = member;
+        for ( int i = 0; i < memberCount; i++ ) {
+            if (members[i].getSocialSecurityNumber().equals(socialSecurityNumber)) {
+                memberToLend = members[i];
                 break;
             }
         }
@@ -176,9 +174,9 @@ public class Library {
             }
         }
         Book bookToReturn = null;
-        for (Book book : books) {
-            if (book != null && book.isbn() == isbn) {
-                bookToReturn = book;
+        for ( int i = 0; i < bookCount; i++ ) {
+            if ( books[i].isbn() == isbn ) {
+                bookToReturn = books[i];
                 break;
             }
         }
@@ -199,7 +197,7 @@ public class Library {
             }
         }
         if ( loanIndex == -1 ) {
-            IO.println("Det finns inget registrerat lån för den boken och låntagaren.");
+            IO.println("Det finns inget registrerat lån med detta ISBN-numret.");
             return;
         }
         Member memberToReturn = loans[loanIndex].getMember();
@@ -288,7 +286,7 @@ public class Library {
         return false;
     }
 
-    //Metod som kollar ifall ett nummer innehåller något annat än siffror. Returnerar boolean.
+    //Metod som kollar ifall ett nummer innehåller bokstäver. Returnerar boolean.
     private boolean containsLetter(String number) {
         for ( int i = 0; i < number.length(); i++) {
             if ( Character.isLetter(number.charAt(i)) )
