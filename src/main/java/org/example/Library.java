@@ -1,12 +1,13 @@
 package org.example;
 import java.util.Locale;
+import java.util.Arrays;
 
 public class Library {
-    private Book[] books = new Book[5];
+    private Book[] books = new Book[50];
     private int bookCount = 0;
-    private Loan[] loans = new Loan[1];
+    private Loan[] loans = new Loan[50];
     private int loanCount = 0;
-    private Member[] members = new Member[1];
+    private Member[] members = new Member[50];
     private int memberCount = 0;
 
     static void main() {
@@ -54,49 +55,43 @@ public class Library {
     //att det finns plats i arrayen för fler böcker. Lägger till bok via ISBN, titel och författare.
     //Åtkomst via den interaktiva menyn.
     private void addBook() {
-        if ( bookCount >= books.length )
-            IO.println("Biblioteket är fullt. Inga fler böcker kan läggas till.");
-        else {
-            long isbn;
-            while (true) {
-                IO.println("ISBN-nummer: ");
-                try {
-                    isbn = Long.parseLong(IO.readln());
-                    break;
-                }
-                catch (NumberFormatException e) {
-                    IO.println("Ogiltigt ISBN. Ange endast siffror.");
-                }
+        long isbn;
+        while (true) {
+            IO.println("ISBN-nummer: ");
+            try {
+                isbn = Long.parseLong(IO.readln());
+                break;
+            } catch (NumberFormatException e) {
+                IO.println("Ogiltigt ISBN. Ange endast siffror.");
             }
-            String title = IO.readln("Titel: ");
-            String author = IO.readln("Författare: ");
-            while ( containsNumber(author) )
-                author = IO.readln("Författarens namn kan inte innehålla några siffror. Försök igen: ");
-            books[bookCount] = new Book(isbn, title, author);
-            bookCount++;
-            IO.println("Boken " + title + " skriven av " + author + " har lagts till i biblioteket.");
         }
+        String title = IO.readln("Titel: ");
+        String author = IO.readln("Författare: ");
+        while (containsNumber(author))
+            author = IO.readln("Författarens namn kan inte innehålla några siffror. Försök igen: ");
+        ensureBooksCapacity();
+        books[bookCount] = new Book(isbn, title, author);
+        bookCount++;
+        IO.println("Boken " + title + " skriven av " + author + " har lagts till i biblioteket.");
+
     }
 
     //Metod som lägger till låntagare i ett register och ökar räknaren. Kontrollerar att det finns plats
     //i arrayen. Åtkomst via den interaktiva menyn.
     private void addMember() {
-        if ( memberCount >= members.length )
-            IO.println("Registret är fullt. Kan inte lägga till fler låntagare.");
-        else {
-            String socialSecurityNumber = IO.readln("Personnummer: ");
-            while ( containsLetter(socialSecurityNumber) )
-                socialSecurityNumber = IO.readln("Får bara innehålla siffror: ");
-            String firstName = IO.readln("Förnamn: ");
-            while ( containsNumber(firstName) )
-                firstName = IO.readln("Förnamnet får inte innehålla siffror. Försök igen: ");
-            String lastName = IO.readln("Efternamn: ");
-            while ( containsNumber(lastName) )
-                lastName = IO.readln("Efternamnet får inte innehålla siffror. Försök igen: ");
-            members[memberCount] = new Member(socialSecurityNumber, firstName, lastName);
-            memberCount++;
-            IO.println("Låntagare " + firstName + " " + lastName + " har lagts till.");
-        }
+        String socialSecurityNumber = IO.readln("Personnummer: ");
+        while (containsLetter(socialSecurityNumber))
+            socialSecurityNumber = IO.readln("Får bara innehålla siffror: ");
+        String firstName = IO.readln("Förnamn: ");
+        while (containsNumber(firstName))
+            firstName = IO.readln("Förnamnet får inte innehålla siffror. Försök igen: ");
+        String lastName = IO.readln("Efternamn: ");
+        while (containsNumber(lastName))
+            lastName = IO.readln("Efternamnet får inte innehålla siffror. Försök igen: ");
+        ensureMembersCapacity();
+        members[memberCount] = new Member(socialSecurityNumber, firstName, lastName);
+        memberCount++;
+        IO.println("Låntagare " + firstName + " " + lastName + " har lagts till.");
     }
 
     // Metod som säger ifall en bok är tillgänglig för utlåning.
@@ -156,10 +151,7 @@ public class Library {
             IO.println("Det går inte att låna boken eftersom det maximala antalet lån redan är nått");
             return;
         }
-        if ( loanCount >= loans.length ) {
-            IO.println("Det går inte att registrera fler lån.");
-            return;
-        }
+        ensureLoansCapacity();
         loans[loanCount] = new Loan(bookToLend, memberToLend);
         loanCount++;
         memberToLend.changeNumberOfActiveLoans(1);
@@ -321,5 +313,26 @@ public class Library {
         IO.println("Låntagaren med flest aktiva lån är: " + memberWithMostActiveLoans.getFirstName()
                 + " " + memberWithMostActiveLoans.getLastName()  + ". Antalet lån är: "
                 + memberWithMostActiveLoans.getNumberOfActiveLoans());
+    }
+
+    //Metod som gör en ny array med samma namn men dubbelt så många platser när den använda arrayen är full.
+    //Kopierar också över alla element som finns i bef. array.
+    private void ensureBooksCapacity() {
+        if ( bookCount == books.length )
+            books = Arrays.copyOf(books, books.length * 2);
+    }
+
+    //Metod som gör en ny array med samma namn men dubbelt så många platser när den använda arrayen är full.
+    //Kopierar också över alla element som finns i bef. array.
+    private void ensureMembersCapacity() {
+        if ( memberCount == members.length )
+            members = Arrays.copyOf(members, members.length * 2);
+    }
+
+    //Metod som gör en ny array med samma namn men dubbelt så många platser när den använda arrayen är full.
+    //Kopierar också över alla element som finns i bef. array.
+    private void ensureLoansCapacity() {
+        if ( loanCount == loans.length )
+            loans = Arrays.copyOf(loans, loans.length * 2);
     }
 }
