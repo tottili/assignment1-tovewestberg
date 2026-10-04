@@ -15,15 +15,6 @@ public class Member {
         this.numberOfActiveLoans = 0;
     }
 
-    /* Konstruktor för att skapa ett objekt av en låntagare som saknar personnummer. Input kräver för- och efternamn.
-     Aktiva lån har initieringen 0 lån och personnummer initieras till en tom textsträng. */
-    public Member(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.numberOfActiveLoans = 0;
-        this.socialSecurityNumber = "";
-    }
-
     //Metod som avgör ifall låntagaren får låna fler böcker, maxantalet aktiva lån är 30. Returnerar boolean
     public boolean hasMaximumActiveLoans() {
         return getNumberOfActiveLoans() >= 30;

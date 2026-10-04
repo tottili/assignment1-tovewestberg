@@ -2,7 +2,7 @@ package org.example;
 import java.util.Locale;
 
 public class Library {
-    private Book[] books = new Book[2];
+    private Book[] books = new Book[5];
     private int bookCount = 0;
     private Loan[] loans = new Loan[1];
     private int loanCount = 0;
@@ -221,6 +221,7 @@ public class Library {
     //Metod som skriver ut alla böckerna i arrayen books. Skriver även ut bokens status och när
     //en bok är utlånad skriver den ut vem låntagaren är.
     private void printAllBooks() {
+        sortBooksByTitle();
         for ( int i = 0; i < bookCount; i++ ) {
             Book book = books[i];
             IO.println(book.title() + ", skriven av: "
@@ -241,6 +242,22 @@ public class Library {
                 IO.println("Boken är tyvärr utlånad, till "
                         + member.getFirstName() + " " + member.getLastName());
             }
+        }
+    }
+
+    //Metod som sorterar böckerna i biblioteket alfabetiskt, på titel.
+    private void sortBooksByTitle() {
+        for ( int i = 0; i < bookCount - 1; i++ ) {
+            int earlierIndex = i;
+            for ( int j = i + 1; j < bookCount; j++ ) {
+                String currentTitle = books[j].title().toLowerCase(Locale.ROOT);
+                String earlierTitle = books[earlierIndex].title().toLowerCase(Locale.ROOT);
+                if ( currentTitle.compareTo(earlierTitle) < 0 )
+                    earlierIndex = j;
+            }
+            Book temp = books[i];
+            books[i] = books[earlierIndex];
+            books[earlierIndex] = temp;
         }
     }
 
@@ -288,7 +305,7 @@ public class Library {
         return false;
     }
 
-    //Metod som söker efter den låntagare med flest aktiva lån.
+    //Metod som söker efter och skriver ut den låntagare med flest aktiva lån.
     private void printMemberWithMostActiveLoans() {
         Member memberWithMostActiveLoans = null;
         if ( loanCount == 0 ) {
