@@ -50,36 +50,57 @@ public class Library {
     }
 
     //Metod som lägger till bok i Bibliotekshanteraren och ökar bok-räknaren. Kontrollerar även
-    //att det finns plats i arrayen för fler böcker. Åtkomst via den interaktiva menyn.
+    //att det finns plats i arrayen för fler böcker. Lägger till bok via ISBN, titel och författare.
+    //Åtkomst via den interaktiva menyn.
     private void addBook() {
-        if (bookCount >= books.length)
+        if ( bookCount >= books.length )
             IO.println("Biblioteket är fullt. Inga fler böcker kan läggas till.");
         else {
-            long isbn = Long.parseLong(IO.readln("ISBN-nummer: "));
+            long isbn;
+            while (true) {
+                IO.println("ISBN-nummer: ");
+                try {
+                    isbn = Long.parseLong(IO.readln());
+                    break;
+                }
+                catch (NumberFormatException e) {
+                    IO.println("Ogiltigt ISBN. Ange endast siffror.");
+                }
+            }
             String title = IO.readln("Titel: ");
             String author = IO.readln("Författare: ");
+            while ( containsNumber(author) )
+                author = IO.readln("Författarens namn kan inte innehålla några siffror. Försök igen: ");
             books[bookCount] = new Book(isbn, title, author);
             bookCount++;
+            IO.println("Boken " + title + " skriven av " + author + " har lagts till i biblioteket.");
         }
     }
 
     //Metod som lägger till låntagare i ett register och ökar räknaren. Kontrollerar att det finns plats
     //i arrayen. Åtkomst via den interaktiva menyn.
     private void addMember() {
-        if (memberCount >= members.length)
+        if ( memberCount >= members.length )
             IO.println("Registret är fullt. Kan inte lägga till fler låntagare.");
         else {
             String socialSecurityNumber = IO.readln("Personnummer: ");
+            while ( containsLetter(socialSecurityNumber) )
+                socialSecurityNumber = IO.readln("Får bara innehålla siffror: ");
             String firstName = IO.readln("Förnamn: ");
+            while ( containsNumber(firstName) )
+                firstName = IO.readln("Förnamnet får inte innehålla siffror. Försök igen: ");
             String lastName = IO.readln("Efternamn: ");
+            while ( containsNumber(lastName) )
+                lastName = IO.readln("Efternamnet får inte innehålla siffror. Försök igen: ");
             members[memberCount] = new Member(socialSecurityNumber, firstName, lastName);
             memberCount++;
+            IO.println("Låntagare " + firstName + " " + lastName + " har lagts till.");
         }
     }
 
     // Metod som säger ifall en bok är tillgänglig för utlåning.
     private boolean isBookAvailable(Book book) {
-        for (Loan loan : loans) {
+        for ( Loan loan : loans ) {
             if ( loan != null && loan.getBook().isbn() == book.isbn() ) //för att undvika NullPointerException
                 return false;
         }
@@ -89,9 +110,19 @@ public class Library {
     // Metod som lånar ut bok. Användaren får mata in ISBN-numret som identifierare för boken, finns boken och är
     //tillgänglig i lager så lånas den ut. Låntagaren och boken förs in i arrayen loans.
     private void lendBook() {
-        long isbn = Long.parseLong(IO.readln("ISBN-nummer: "));
+        long isbn;
+        while (true) {
+            IO.println("ISBN-nummer: ");
+            try {
+                isbn = Long.parseLong(IO.readln());
+                break;
+            }
+            catch (NumberFormatException e) {
+                IO.println("Ogiltigt ISBN. Ange endast siffror.");
+            }
+        }
         Book bookToLend = null;
-        for (Book book : books) {
+        for ( Book book : books ) {
             if (book != null && book.isbn() == isbn) {
                 bookToLend = book;
                 break;
@@ -107,8 +138,10 @@ public class Library {
         }
         IO.println("Boken hittades: " + bookToLend.title());
         String socialSecurityNumber = IO.readln("Låntagarens personnummer: ");
+        while ( containsLetter(socialSecurityNumber) )
+            socialSecurityNumber = IO.readln("Får bara innehålla siffror: ");
         Member memberToLend = null;
-        for (Member member : members) {
+        for ( Member member : members ) {
             if ( member != null && member.getSocialSecurityNumber().equals(socialSecurityNumber)) {
                 memberToLend = member;
                 break;
@@ -122,7 +155,7 @@ public class Library {
             IO.println("Det går inte att låna boken eftersom det maximala antalet lån redan är nått");
             return;
         }
-        if ( loanCount >= loans.length) {
+        if ( loanCount >= loans.length ) {
             IO.println("Det går inte att registrera fler lån.");
             return;
         }
@@ -138,7 +171,17 @@ public class Library {
     //sista lånet i arrayen över på den bok som lämnas tillbaka, och null läggs på den sista platsen i arrayen.
     //Metoden minskar loanCount och låntagarens räknare.
     private void returnBook() {
-        long isbn = Long.parseLong(IO.readln("ISBN-nummer: "));
+        long isbn;
+        while (true) {
+            IO.println("ISBN-nummer: ");
+            try {
+                isbn = Long.parseLong(IO.readln());
+                break;
+            }
+            catch (NumberFormatException e) {
+                IO.println("Ogiltigt ISBN. Ange endast siffror.");
+            }
+        }
         Book bookToReturn = null;
         for (Book book : books) {
             if (book != null && book.isbn() == isbn) {
@@ -223,5 +266,24 @@ public class Library {
             }
         }
         IO.println("Ingen träff hittades med din sökterm");
+    }
+
+    // Metod för att kunna stämma av att namn (ex låntagare och författare) inte innehåller siffror.
+    private boolean containsNumber(String name) {
+        for ( int i = 0; i < name.length(); i++ ) {
+            if ( name.charAt(i) >= '0' && name.charAt(i) <= '9') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Metod som kollar ifall ett nummer innehåller något annat än siffror. Returnerar boolean.
+    private boolean containsLetter(String number) {
+        for ( int i = 0; i < number.length(); i++) {
+            if ( Character.isLetter(number.charAt(i)) )
+                return true;
+        }
+        return false;
     }
 }
