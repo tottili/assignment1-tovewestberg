@@ -37,3 +37,6 @@ borttagning av element i returnBook() hade en ArrayList också hanterat att undv
 i förlängningen nullPointerException eller indexOutOfBounds. Abstraktionsnivån hade höjts,
 men nu har uppgiften varit mer fostrande och gett en bättre förståelse för hur programmet körs samt
 hur operander, funktioner och allt anropas i Java.
+
+Hälsningar, 
+Tove Westberg (mitt namn är dock Tove Lind på ITHS och Teams, men har skickat in ärende på det för längesen)
