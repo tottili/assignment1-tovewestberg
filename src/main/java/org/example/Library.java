@@ -2,16 +2,15 @@ package org.example;
 import java.util.Locale;
 
 public class Library {
-    private Book[] books = new Book[10];
+    private Book[] books = new Book[2];
     private int bookCount = 0;
-    private Loan[] loans = new Loan[10];
+    private Loan[] loans = new Loan[1];
     private int loanCount = 0;
-    private Member[] members = new Member[10];
+    private Member[] members = new Member[1];
     private int memberCount = 0;
 
     static void main() {
         new Library().runLibraryProgram();
-
     }
 
     //En metod som visar den interaktiva menyn som används i programmet.
@@ -25,6 +24,7 @@ public class Library {
                 4. Lämna tillbaka bok
                 5. Sök bok (titel eller författare)
                 6. Visa alla böcker och status
+                7. Skriv ut låntagaren med flest lån
                 e. Avsluta
                 """;
         IO.println(menu);
@@ -43,6 +43,7 @@ public class Library {
                 case "4" -> returnBook();
                 case "5" -> findBook();
                 case "6" -> printAllBooks();
+                case "7" -> printMemberWithMostActiveLoans();
                 case "e", "E" -> running = false;
                 default -> IO.println("Det går inte att välja. Försök igen.");
             }
@@ -285,5 +286,23 @@ public class Library {
                 return true;
         }
         return false;
+    }
+
+    //Metod som söker efter den låntagare med flest aktiva lån.
+    private void printMemberWithMostActiveLoans() {
+        Member memberWithMostActiveLoans = null;
+        if ( loanCount == 0 ) {
+            IO.println("Det finns inga aktiva lån");
+            return;
+        }
+        for ( int i = 0; i < memberCount; i++ ) {
+            Member member = members[i];
+            if ( memberWithMostActiveLoans == null || member.getNumberOfActiveLoans()
+                    > memberWithMostActiveLoans.getNumberOfActiveLoans() )
+                memberWithMostActiveLoans = member;
+        }
+        IO.println("Låntagaren med flest aktiva lån är: " + memberWithMostActiveLoans.getFirstName()
+                + " " + memberWithMostActiveLoans.getLastName()  + ". Antalet lån är: "
+                + memberWithMostActiveLoans.getNumberOfActiveLoans());
     }
 }
